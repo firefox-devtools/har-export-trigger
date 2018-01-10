@@ -20,9 +20,10 @@ The following bug needs to be fixed yet:
 
 ## How To Use
 Install the extension into your browser (Firefox & Chrome supported)
-and include `harapi.js` that is available in `lib` directory in this repo.
+and include `harapi.js` into your page (the file is available in `lib`
+directory in this repo).
 
-An example script on your page can look like as follows:
+An example script looks like as follows:
 
 ```
 <script type="text/javascript" src="harapi.js"></script>
