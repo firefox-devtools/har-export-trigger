@@ -1,7 +1,7 @@
 # HARExportTrigger
 Trigger HAR export any time directly from within a page.
 
-WebExtension improving automated HAR (HTTP Archive) export of collected data from the Network panel. This extension is built on top of native Firefox DevTools WebExtension API.
+WebExtension improving automated HAR (HTTP Archive) export of collected data from the Network panel. This extension is built on top of WebExtensions DevTools API (compatible with Firefox and Chrome).
 
 The extension exports HAR API directly to the page. Any automated system can be consequently built on top of the API and trigger HAR export using a simple JavaScript call at any time. It can be also nicely integrated with e.g. Selenium to implement automated HAR export robots for existing automated test suites.
 
