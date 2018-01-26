@@ -35,3 +35,26 @@ port.onMessage.addListener(function (message) {
 port.postMessage({
   tabId: chrome.devtools.inspectedWindow.tabId
 });
+
+function onRequest(request) {
+  dump("=============> onRequest " + request + "\n");
+
+  port.postMessage({
+    tabId: chrome.devtools.inspectedWindow.tabId,
+    request: {test: 100},
+  });
+
+  //throw new Error("devtools.js extension, onRequestFinished handler");
+
+  request.getContent(function (content, encoding) {
+    request.response.content.text = content;
+    request.response.content.encoding = encoding;
+
+    port.postMessage({
+      tabId: chrome.devtools.inspectedWindow.tabId,
+      request: {test: true},
+    });
+  })
+};
+
+chrome.devtools.network.onRequestFinished.addListener(onRequest);

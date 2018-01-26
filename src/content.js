@@ -27,6 +27,10 @@ function setupPortIfNeeded() {
       if (message && message.har) {
         onHarDone(message);
       }
+
+      if (message && message.request) {
+        onRequestFinished(message);
+      }
     });
   }
 }
@@ -63,6 +67,21 @@ function onHarDone(message) {
   detail.harLog = JSON.stringify(har);
 
   let e = new window.CustomEvent("HAR.triggerExport-Response", {
+    detail: detail
+  });
+
+  document.dispatchEvent(e);
+}
+
+function onRequestFinished(message) {
+  let {
+    request
+  } = message;
+
+  let detail = new window.Object();
+  detail.request = JSON.stringify(request);
+
+  let e = new window.CustomEvent("HAR.onRequestFinished", {
     detail: detail
   });
 
