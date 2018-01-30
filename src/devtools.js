@@ -79,18 +79,18 @@ function onRemoveRequestListener() {
  */
 function onRequestFinished(request) {
   let result = request.getContent(function (content, encoding) {
-    //request.response.contentText = content;
-    //request.response.contentEncoding = encoding;
+    request.response.content.text = content;
+    request.response.content.encoding = encoding;
 
     port.postMessage({
       tabId: chrome.devtools.inspectedWindow.tabId,
-      request: JSON.stringify(request.response),
+      request: JSON.stringify(request),
     });
   });
 
-  if (typeof result.then == "function") {
-    result.then(content => {
-      console.log("=============> content ", content);
-    })
-  }
+  // TODO(Honza): what if the return value would be a Promise?
+  // if (typeof result.then == "function") {
+  //  result.then(content => {
+  //  });
+  // }
 };
