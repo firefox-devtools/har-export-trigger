@@ -18,6 +18,18 @@ You need Firefox 59+ to run this extension.
 The following bug needs to be fixed yet:
 * Bug 1311177 - Implement the devtools.network.getHAR API method
 
+## Scopes
+There are following scopes related to the architecture of this extension.
+
+1) Page scope - This is where your page is running. This scope also includes
+                harapi.js file and eg triggers HAR export.
+2) Content scope - This scope is responsible for handling messages from the page
+                   and communicating with the DevTools scope.
+3) Background scope - Background scope is responsible for relaying messages
+                      between Content and Devtools scopes.
+4) Devtools scope - This scope is responsible for accessing DevTools
+                    WebExtension API and sending results back to content scope.
+
 ## How To Use
 Install the extension into your browser (Firefox & Chrome supported)
 and include `harapi.js` into your page (the file is available in `lib`
