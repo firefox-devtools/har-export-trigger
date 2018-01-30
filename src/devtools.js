@@ -4,57 +4,93 @@
 
 "use strict";
 
-console.log("devtools-script: LOAD");
-
 /**
- * Connect to the background script.
+ * Connect to the background script and send initialization message.
+ * This first message is needed to properly pair connection within
+ * the background script relay logic.
  */
 var port = chrome.runtime.connect({ name: "devtools" });
-
-/**
- * Listen for message from the content
- * (forwarded by background script)
- */
-port.onMessage.addListener(function (message) {
-  console.log("devtools-script: onMessage", message);
-
-  if (message && message.action === "getHAR") {
-    chrome.devtools.network.getHAR(function(harLog) {
-      console.log("harLog", harLog);
-
-      port.postMessage({
-        tabId: chrome.devtools.inspectedWindow.tabId,
-        har: harLog,
-        actionId: message.actionId,
-      });
-    });
-  }
-});
-
-// Relay the tab ID to the background page.
 port.postMessage({
   tabId: chrome.devtools.inspectedWindow.tabId
 });
 
-function onRequest(request) {
-  dump("=============> onRequest " + request + "\n");
+/**
+ * Listen for message sent from the content scope (they are relayed
+ * by background script).
+ */
+function onMessage(message) {
+  if (!message) {
+    console.error("ERROR: message object doesn't exist!");
+    return;
+  }
 
-  port.postMessage({
-    tabId: chrome.devtools.inspectedWindow.tabId,
-    request: {test: 100},
+  switch (message.action) {
+    case "getHAR":
+      onGetHAR(message);
+      break;
+    case "addRequestListener":
+      onAddRequestListener();
+      break;
+    case "removeRequestListener":
+      onRemoveRequestListener();
+      break;
+  }
+}
+
+port.onMessage.addListener(onMessage);
+
+/**
+ * Listen for disconnect and clean up listeners.
+ */
+port.onDisconnect.addListener(function() {
+  port.onMessage.removeListener(onMessage);
+  port = null;
+});
+
+function onGetHAR(message) {
+  chrome.devtools.network.getHAR(function(harLog) {
+    port.postMessage({
+      tabId: chrome.devtools.inspectedWindow.tabId,
+      har: harLog,
+      actionId: message.actionId,
+    });
   });
+}
 
-  //throw new Error("devtools.js extension, onRequestFinished handler");
+var listenerAdded = false;
 
-  request.getContent(function (content, encoding) {
-    request.response.content.text = content;
-    request.response.content.encoding = encoding;
+function onAddRequestListener() {
+  if (!listenerAdded) {
+    listenerAdded = true;
+    chrome.devtools.network.onRequestFinished.addListener(onRequestFinished);
+  }
+}
+
+function onRemoveRequestListener() {
+  if (listenerAdded) {
+    listenerAdded = false;
+    chrome.devtools.network.onRequestFinished.removeListener(onRequestFinished);
+  }
+}
+
+/**
+ * Handles `onRequestFinished` event and sends HAR (with request
+ * related data) to the content scope.
+ */
+function onRequestFinished(request) {
+  let result = request.getContent(function (content, encoding) {
+    //request.response.contentText = content;
+    //request.response.contentEncoding = encoding;
 
     port.postMessage({
       tabId: chrome.devtools.inspectedWindow.tabId,
-      request: {test: true},
+      request: JSON.stringify(request.response),
     });
-  })
-};
+  });
 
-chrome.devtools.network.onRequestFinished.addListener(onRequest);
+  if (typeof result.then == "function") {
+    result.then(content => {
+      console.log("=============> content ", content);
+    })
+  }
+};

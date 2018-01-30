@@ -4,20 +4,24 @@
 
 "use strict";
 
-console.log("background-script: LOAD");
-
 /**
- * List of connections content <-> devtools.
+ * List of connections for `content <-> devtools` communication.
  */
 var connections = {};
 
 /**
+ * This script is responsible for relaying messages between
+ * content and devtools scopes.
+ *
  * Basic listener for connect messages. It's responsible
  * for creating mappings and forwarding messages between
  * content and devtools scopes.
+ *
+ * Both, the content and devtools scope must send
+ * an initialization message in order to pair.
  */
 chrome.runtime.onConnect.addListener(function(connection) {
-  console.log("background-script: onConnect", connection);
+  //console.log("background-script: onConnect", connection);
 
   var listener;
 
@@ -57,7 +61,7 @@ chrome.runtime.onConnect.addListener(function(connection) {
         delete con.content;
       }
 
-      if (con.devtools && message.action === "getHAR") {
+      if (con.devtools && message.action) {
         con.devtools.postMessage(message);
       }
     }

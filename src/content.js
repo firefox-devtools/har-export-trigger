@@ -4,57 +4,53 @@
 
 "use strict";
 
-console.log("content-script: LOAD");
-
-var port;
+/**
+ * Connect to the background script and send initialization message.
+ * This first message is needed to properly pair connection within
+ * the background script relay logic.
+ */
+var port = chrome.runtime.connect(null, { name: "content" });
+port.postMessage({});
 
 /**
- * Lazily setup port for communication with the background script
- * and send initialization message.
+ * Listen for incoming messages from the devtools scope.
  */
-function setupPortIfNeeded() {
-  if (!port) {
-    port = chrome.runtime.connect(null, { name: "content" });
-
-    // Listen for disconnect.
-    port.onDisconnect.addListener(function() {
-      port = null;
-      window.removeEventListener("message", onMessage);
-    });
-
-    // Listen for incoming messages
-    port.onMessage.addListener(function(message) {
-      if (message && message.har) {
-        onHarDone(message);
-      }
-
-      if (message && message.request) {
-        onRequestFinished(message);
-      }
-    });
+function onMessage(message) {
+  if (!message) {
+    console.error("ERROR: message object doesn't exist!");
+    return;
   }
-}
 
-document.addEventListener("HAR.triggerExport", function(event) {
-  setupPortIfNeeded();
+  if (message.har) {
+    onHarReceived(message);
+  }
 
-  let {
-    actionId,
-    options,
-  } = event.detail;
+  if (message.request) {
+    onRequestFinished(message);
+  }
+};
 
-  port.postMessage({
-    actionId: actionId,
-    action: "getHAR",
-  });
-}, false);
+port.onMessage.addListener(onMessage);
 
+/**
+ * Listen for disconnect and clean up listeners.
+ */
+port.onDisconnect.addListener(function() {
+  port.onMessage.removeListener(onMessage);
+  port = null;
+
+  document.removeEventListener("HAR.addRequestListener", onAddRequestListener, false);
+  document.removeEventListener("HAR.triggerExport", onTriggerExport, false);
+  document.removeEventListener("HAR.removeRequestListener", onRemoveRequestListener, false);
+});
+
+// Handle messages from the devtools scope.
 
 /**
  * Receive HAR log from DevTools script, remove related
  * promise from `exportsInProgress` map and resolve it.
  */
-function onHarDone(message) {
+function onHarReceived(message) {
   let {
     actionId,
     har
@@ -69,21 +65,61 @@ function onHarDone(message) {
   let e = new window.CustomEvent("HAR.triggerExport-Response", {
     detail: detail
   });
-
   document.dispatchEvent(e);
 }
 
+/**
+ * Handles `onRequestFinished` message from the devtools scope
+ * and passes HAR data (related to the finished request) back
+ * to the page scope.
+ */
 function onRequestFinished(message) {
-  let {
-    request
-  } = message;
-
   let detail = new window.Object();
-  detail.request = JSON.stringify(request);
+  detail.request = message.request;
 
   let e = new window.CustomEvent("HAR.onRequestFinished", {
     detail: detail
   });
-
   document.dispatchEvent(e);
 }
+
+// Handle messages from the page scope (DOM events).
+
+/**
+ * Handle requests/events for HAR from the page scope. The result
+ * HAR object will be received from devtools scope and send back
+ * to the page scope in `onHarReceived`.
+ */
+function onTriggerExport(event) {
+  let {
+    actionId,
+    options,
+  } = event.detail;
+
+  port.postMessage({
+    actionId: actionId,
+    action: "getHAR",
+  });
+}
+
+/**
+ * Register `onRequestFinished` listener
+ */
+function onAddRequestListener(event) {
+  port.postMessage({
+    action: "addRequestListener",
+  });
+}
+
+/**
+ * Unregister `onRequestFinished` listener
+ */
+function onRemoveRequestListener(event) {
+  port.postMessage({
+    action: "removeRequestListener",
+  });
+}
+
+document.addEventListener("HAR.addRequestListener", onAddRequestListener, false);
+document.addEventListener("HAR.triggerExport", onTriggerExport, false);
+document.addEventListener("HAR.removeRequestListener", onRemoveRequestListener, false);
