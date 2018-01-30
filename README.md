@@ -13,16 +13,17 @@ Quick description of the directory structure in this project.
 * `lib` - HAR client API files
 
 ## Requirements
-You need Firefox 59+ to run this extension.
+You need Firefox 60+ to run this extension.
 
-The following bug needs to be fixed yet:
-* Bug 1311177 - Implement the devtools.network.getHAR API method
+The following bugs need to be fixed:
+* [Bug 1311177](https://bugzilla.mozilla.org/show_bug.cgi?id=1311177) - Implement the devtools.network.getHAR API method
+* [Bug 1311171](https://bugzilla.mozilla.org/show_bug.cgi?id=1311171) - Implement the devtools.network.onRequestFinished API event
 
 ## Scopes
 There are following scopes related to the architecture of this extension.
 
 1) Page scope - This is where your page is running. This scope also includes
-                harapi.js file and eg triggers HAR export.
+                harapi.js file (see lib dir in this repo) and eg triggers HAR export.
 2) Content scope - This scope is responsible for handling messages from the page
                    and communicating with the DevTools scope.
 3) Background scope - Background scope is responsible for relaying messages
@@ -43,9 +44,15 @@ An example script looks like as follows:
 HAR.triggerExport().then(harLog => {
   console.log(harLog);
 });
+
+HAR.addRequestListener(harEntry => {
+  console.log("Request finished", request);
+});
+
 ```
 
 ## Further Resources
+* Test page for HARExportTrigger: http://softwareishard.com/test/harexporttrigger/
 * HAR Spec: https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/HAR/Overview.html
 * HAR Spec (original): http://www.softwareishard.com/blog/har-12-spec/
 * HTTP Archive Viewer: http://www.softwareishard.com/blog/har-viewer/
