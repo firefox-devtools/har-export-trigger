@@ -123,3 +123,17 @@ function onRemoveRequestListener(event) {
 document.addEventListener("HAR.addRequestListener", onAddRequestListener, false);
 document.addEventListener("HAR.triggerExport", onTriggerExport, false);
 document.addEventListener("HAR.removeRequestListener", onRemoveRequestListener, false);
+
+/**
+ * Inject harapi.js file into the page automatically. Note that
+ * `cloneInto` can't be used since it's only supported by Firefox,
+ * and so let's inject a <script> tag pointing to the harapi.js file.
+ */
+(function(d, s, id){
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) { return; }
+  js = d.createElement(s);
+  js.id = id;
+  js.src = chrome.runtime.getURL("/lib/harapi.js");
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, "script", "harapi"));

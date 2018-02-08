@@ -18,6 +18,7 @@ You need Firefox 60+ to run this extension.
 The following bugs need to be fixed:
 * [Bug 1311177](https://bugzilla.mozilla.org/show_bug.cgi?id=1311177) - Implement the devtools.network.getHAR API method
 * [Bug 1311171](https://bugzilla.mozilla.org/show_bug.cgi?id=1311171) - Implement the devtools.network.onRequestFinished API event
+* [Bug 1436665](https://bugzilla.mozilla.org/show_bug.cgi?id=1436665) - onRequestFinished event should be sent even if the Netmonitor UI isn't initialized
 
 ## Scopes
 There are following scopes related to the architecture of this extension.
@@ -32,9 +33,14 @@ There are following scopes related to the architecture of this extension.
                     WebExtension API and sending results back to content scope.
 
 ## How To Use
-Install the extension into your browser (Firefox & Chrome supported)
-and include `harapi.js` into your page (the file is available in `lib`
-directory in this repo).
+Install the extension into your browser (Firefox & Chrome supported).
+HAR API implemented in `harapi.js` file is automatically injected
+into your page (the file is available in `lib` directory in this repo).
+
+Note that the Network panel has to be opened at least once (to initialize
+HTTP tracking backend) in order to make HAR API work as expected.
+This limitation will be soon fixed.
+See also [bug 1436665](https://bugzilla.mozilla.org/show_bug.cgi?id=1436665).
 
 An example script looks like as follows:
 

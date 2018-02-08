@@ -22,5 +22,8 @@
         "src/content.js"
       ]
     }
+  ],
+  "web_accessible_resources": [
+    "lib/harapi.js"
   ]
 }
