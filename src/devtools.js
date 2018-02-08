@@ -78,9 +78,14 @@ function onRemoveRequestListener() {
  * related data) to the content scope.
  */
 function onRequestFinished(request) {
-  let result = request.getContent(function (content, encoding) {
+  request.getContent(function (content, encoding) {
+    if (chrome.runtime.lastError) {
+      console.log(chrome.runtime.lastError);
+      return;
+    }
+
+    delete request.response.content.comment;
     request.response.content.text = content;
-    request.response.content.encoding = encoding;
 
     port.postMessage({
       tabId: chrome.devtools.inspectedWindow.tabId,
@@ -88,9 +93,13 @@ function onRequestFinished(request) {
     });
   });
 
-  // TODO(Honza): what if the return value would be a Promise?
-  // if (typeof result.then == "function") {
-  //  result.then(content => {
-  //  });
-  // }
+  // Alternate way using the returned promise to get
+  // the response content.
+  //
+  // request.getContent().then(([content, encoding]) => {
+  //   console.log("result content ", content);
+  //   console.log("result encoding ", encoding);
+  // }).catch(err => {
+  //   console.log(chrome.runtime.lastError);
+  // });
 };
