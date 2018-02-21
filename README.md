@@ -66,6 +66,8 @@ HAR.addRequestListener(harEntry => {
 
 ```
 
+See also online [test page](http://softwareishard.com/test/harexporttrigger/).
+
 ## Further Resources
 * Test page for HARExportTrigger: http://softwareishard.com/test/harexporttrigger/
 * HAR Spec: https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/HAR/Overview.html
