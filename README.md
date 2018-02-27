@@ -24,10 +24,11 @@ Quick description of the directory structure in this project.
 ## Requirements
 You need Firefox 60+ to run this extension.
 
-The following bugs need to be fixed:
+The following Firefox bugs are related:
 * [~~Bug 1311177~~](https://bugzilla.mozilla.org/show_bug.cgi?id=1311177) - (fixed in Firefox 60) Implement the devtools.network.getHAR API method
 * [~~Bug 1311171~~](https://bugzilla.mozilla.org/show_bug.cgi?id=1311171) - (fixed in Firefox 60) Implement the devtools.network.onRequestFinished API event
 * [Bug 1436665](https://bugzilla.mozilla.org/show_bug.cgi?id=1436665) - onRequestFinished event should be sent even if the Netmonitor UI isn't initialized
+* [Bug 1434855](https://bugzilla.mozilla.org/show_bug.cgi?id=1434855) - HAR export is very slow
 
 ## Scopes
 There are following scopes related to the architecture of this extension.
