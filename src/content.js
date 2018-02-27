@@ -129,11 +129,11 @@ document.addEventListener("HAR.removeRequestListener", onRemoveRequestListener, 
  * `cloneInto` can't be used since it's only supported by Firefox,
  * and so let's inject a <script> tag pointing to the harapi.js file.
  */
-(function(d, s, id){
-  var js, fjs = d.getElementsByTagName(s)[0];
+(function(d, id){
+  var js, fjs = d.head;
   if (d.getElementById(id)) { return; }
-  js = d.createElement(s);
+  js = d.createElement('script');
   js.id = id;
   js.src = chrome.runtime.getURL("/lib/harapi.js");
   fjs.parentNode.insertBefore(js, fjs);
-}(document, "script", "harapi"));
+}(document, "harapi"));
