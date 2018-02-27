@@ -25,8 +25,8 @@ Quick description of the directory structure in this project.
 You need Firefox 60+ to run this extension.
 
 The following bugs need to be fixed:
-* [Bug 1311177](https://bugzilla.mozilla.org/show_bug.cgi?id=1311177) - Implement the devtools.network.getHAR API method
-* [Bug 1311171](https://bugzilla.mozilla.org/show_bug.cgi?id=1311171) - Implement the devtools.network.onRequestFinished API event
+* [~~Bug 1311177~~](https://bugzilla.mozilla.org/show_bug.cgi?id=1311177) - (fixed in Firefox 60) Implement the devtools.network.getHAR API method
+* [~~Bug 1311171~~](https://bugzilla.mozilla.org/show_bug.cgi?id=1311171) - (fixed in Firefox 60) Implement the devtools.network.onRequestFinished API event
 * [Bug 1436665](https://bugzilla.mozilla.org/show_bug.cgi?id=1436665) - onRequestFinished event should be sent even if the Netmonitor UI isn't initialized
 
 ## Scopes
