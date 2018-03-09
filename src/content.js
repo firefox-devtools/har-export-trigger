@@ -21,12 +21,13 @@ function onMessage(message) {
     return;
   }
 
-  if (message.har) {
-    onHarReceived(message);
-  }
-
-  if (message.request) {
-    onRequestFinished(message);
+  switch (message.action) {
+    case "getHAR":
+      onHarReceived(message);
+      break;
+    case "requestFinished":
+      onRequestFinished(message);
+      break;
   }
 };
 
@@ -60,7 +61,7 @@ function onHarReceived(message) {
   // right privileges (using target page window).
   let detail = new window.Object();
   detail.actionId = actionId;
-  detail.harLog = JSON.stringify(har);
+  detail.harLog = har ? JSON.stringify(har) : null;
 
   let e = new window.CustomEvent("HAR.triggerExport-Response", {
     detail: detail

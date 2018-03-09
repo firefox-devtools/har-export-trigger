@@ -38,12 +38,11 @@ chrome.runtime.onConnect.addListener(function(connection) {
         delete con.devtools;
       }
 
-      if (con.content && message.har) {
-        con.content.postMessage(message);
-      }
-
-      if (con.content && message.request) {
-        con.content.postMessage(message);
+      switch (message.action) {
+        case "getHAR":
+        case "requestFinished":
+          con.content.postMessage(message);
+          break;
       }
     }
   }

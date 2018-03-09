@@ -52,6 +52,7 @@ function onGetHAR(message) {
     port.postMessage({
       tabId: chrome.devtools.inspectedWindow.tabId,
       har: harLog,
+      action: "getHAR",
       actionId: message.actionId,
     });
   });
@@ -89,6 +90,7 @@ function onRequestFinished(request) {
 
     port.postMessage({
       tabId: chrome.devtools.inspectedWindow.tabId,
+      action: "requestFinished",
       request: JSON.stringify(request),
     });
   });
