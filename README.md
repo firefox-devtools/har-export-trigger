@@ -6,7 +6,9 @@ WebExtension improving automated HAR (HTTP Archive) export of collected data fro
 The extension exports HAR API directly to the page. Any automated system can be consequently built on top of the API and trigger HAR export using a simple JavaScript call at any time. It can be also nicely integrated with e.g. Selenium to implement automated HAR export robots for existing automated test suites.
 
 ## Installation
-This extension must be installed from source at this point.
+Download from [AMO](https://addons.mozilla.org/en-US/firefox/addon/har-export-trigger/)
+
+Or you can also install it from source:
 1. Clone or download source code in this repository to your machine.
 2. Launch [Firefox Nightly](https://www.mozilla.org/en-US/firefox/channel/desktop/#nightly) and open `about:debugging` page
 3. Click `Load Temporary Add-on` and pick any file from the root source code directory (e.g. `manifest.json`
@@ -22,7 +24,7 @@ Quick description of the directory structure in this project.
 * `lib` - HAR client API files
 
 ## Requirements
-You need Firefox 60+ to run this extension.
+You need Firefox 61+ to run this extension.
 
 The following Firefox bugs are related:
 * [~~Bug 1311177~~](https://bugzilla.mozilla.org/show_bug.cgi?id=1311177) - (fixed in Firefox 60) Implement the devtools.network.getHAR API method
