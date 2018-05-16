@@ -2,11 +2,10 @@
   "name": "HARExportTrigger",
   "author": "Jan Odvarko",
   "short_name": "HARExportTrigger",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "devtools_page": "src/devtools.html",
   "description": "Trigger HAR export from within a web page",
   "manifest_version": 2,
-  "default_locale": "en",
   "homepage_url": "https://github.com/devtools-html/har-export-trigger/",
   "applications": {
     "gecko": {
