@@ -2,7 +2,7 @@
   "name": "HARExportTrigger",
   "author": "Jan Odvarko",
   "short_name": "HARExportTrigger",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "devtools_page": "src/devtools.html",
   "description": "Trigger HAR export from within a web page",
   "manifest_version": 2,
