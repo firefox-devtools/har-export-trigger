@@ -15,6 +15,18 @@ port.postMessage({
 });
 
 /**
+ * Register `onRequestListener` by default.
+ * This module is loaded when DevTools Toolbox is opened
+ * (i.e. when `devtools.html is loaded), and so the Network monitor
+ * backend will be initialized and collecting data since the very
+ * beginning (including the first document request).
+ *
+ * See also:
+ * https://github.com/devtools-html/har-export-trigger/issues/16
+ */
+onAddRequestListener();
+
+/**
  * Listen for message sent from the content scope (they are relayed
  * by background script).
  */
