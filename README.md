@@ -57,7 +57,7 @@ HAR.triggerExport().then(harLog => {
 });
 
 HAR.addRequestListener(harEntry => {
-  console.log("Request finished", request);
+  console.log("Request finished", harEntry);
 });
 
 ```
